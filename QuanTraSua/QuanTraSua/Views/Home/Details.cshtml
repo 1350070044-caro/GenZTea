@@ -1,0 +1,248 @@
+@model QuanTraSua.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root {
+        --primary-color: #2d5a27;
+        --accent-color: #f7b731;
+        --bg-soft: #f8fafc;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: var(--bg-soft);
+    }
+
+    .product-card {
+        border: none;
+        border-radius: 2rem;
+        overflow: hidden;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Hình ảnh nghệ thuật */
+    .image-container {
+        background: linear-gradient(135deg, #e2e8f0 0%, #ffffff 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem;
+        position: relative;
+    }
+
+    .product-img {
+        filter: drop-shadow(0 20px 30px rgba(0,0,0,0.2));
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .product-card:hover .product-img {
+        transform: scale(1.05) rotate(2deg);
+    }
+
+    /* Tùy chỉnh Radio & Checkbox thành nút bấm */
+    .option-selector input[type="radio"],
+    .option-selector input[type="checkbox"] {
+        display: none;
+    }
+
+    .btn-option {
+        border: 2px solid #e2e8f0;
+        padding: 0.75rem 1.5rem;
+        border-radius: 1rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: block;
+        text-align: center;
+        background: white;
+        font-weight: 600;
+        color: #64748b;
+    }
+
+    input:checked + .btn-option {
+        border-color: var(--primary-color);
+        background-color: #f0fdf4;
+        color: var(--primary-color);
+        box-shadow: 0 4px 12px rgba(45, 90, 39, 0.15);
+    }
+
+    /* Topping Card */
+    .topping-item {
+        border: 2px solid #e2e8f0;
+        border-radius: 1.25rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        height: 100%;
+        position: relative;
+    }
+
+    input:checked + .topping-item {
+        border-color: var(--primary-color);
+        background: #fff;
+    }
+
+    input:checked + .topping-item .check-icon {
+        display: block !important;
+    }
+
+    /* Nút giỏ hàng */
+    .btn-add-cart {
+        background: linear-gradient(135deg, #2d5a27 0%, #1e3d20 100%);
+        color: white;
+        border: none;
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+        transition: all 0.3s;
+    }
+
+    .btn-add-cart:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 30px rgba(45, 90, 39, 0.3);
+        color: white;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="card product-card bg-white">
+        <div class="row g-0">
+            <div class="col-lg-6 image-container">
+                <span class="position-absolute top-0 start-0 m-4 badge rounded-pill bg-danger px-3 py-2">
+                    <i class="bi bi-fire me-1"></i> Phổ biến
+                </span>
+                <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/no-image.png" : Model.ImageUrl)" 
+                     class="img-fluid product-img" alt="@Model.Name">
+            </div>
+
+            <div class="col-lg-6 p-4 p-md-5">
+                <nav aria-label="breadcrumb" class="mb-3">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/" class="text-decoration-none text-muted">Trang chủ</a></li>
+                        <li class="breadcrumb-item active">Chi tiết</li>
+                    </ol>
+                </nav>
+
+                <h1 class="display-5 fw-800 mb-2" style="color: #1e293b;">@Model.Name</h1>
+                
+                <div class="d-flex align-items-center mb-4">
+                    <h2 class="text-success fw-bold m-0 fs-1" id="display-price">
+                        @Model.Price.ToString("N0")
+                    </h2>
+                    <span class="fs-4 text-success ms-1">₫</span>
+                </div>
+
+                <p class="text-secondary mb-5 pb-4 border-bottom">@Model.Description</p>
+
+                <div class="mb-4 option-selector">
+                    <label class="form-label fw-bold text-uppercase small text-muted mb-3">Kích cỡ</label>
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <input type="radio" name="size" id="sizeS" data-price="0" checked>
+                            <label class="btn-option" for="sizeS">Size S</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" name="size" id="sizeM" data-price="5000">
+                            <label class="btn-option" for="sizeM">Size M</label>
+                        </div>
+                        <div class="col-4">
+                            <input type="radio" name="size" id="sizeL" data-price="10000">
+                            <label class="btn-option" for="sizeL">Size L</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-uppercase small text-muted mb-2">Mức đường</label>
+                        <select class="form-select form-select-lg rounded-3 border-2">
+                            <option>100% Đường</option>
+                            <option>70% Đường</option>
+                            <option>50% Đường</option>
+                            <option>0% Đường</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold text-uppercase small text-muted mb-2">Mức đá</label>
+                        <select class="form-select form-select-lg rounded-3 border-2">
+                            <option>Đá bình thường</option>
+                            <option>Ít đá</option>
+                            <option>Không đá</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mb-5 option-selector">
+                    <label class="form-label fw-bold text-uppercase small text-muted mb-3">Topping yêu thích</label>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <input type="checkbox" id="tp1" class="topping-checkbox" data-price="7000">
+                            <label class="topping-item d-flex align-items-center justify-content-between" for="tp1">
+                                <div>
+                                    <div class="fw-bold text-dark">Trân châu đen</div>
+                                    <div class="small text-muted">+7,000đ</div>
+                                </div>
+                                <i class="bi bi-check-circle-fill text-success check-icon" style="display:none"></i>
+                            </label>
+                        </div>
+                        <div class="col-6">
+                            <input type="checkbox" id="tp2" class="topping-checkbox" data-price="8000">
+                            <label class="topping-item d-flex align-items-center justify-content-between" for="tp2">
+                                <div>
+                                    <div class="fw-bold text-dark">Thạch trái cây</div>
+                                    <div class="small text-muted">+8,000đ</div>
+                                </div>
+                                <i class="bi bi-check-circle-fill text-success check-icon" style="display:none"></i>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-grid">
+                    <a href="/Cart/AddToCart/@Model.Id" class="btn btn-add-cart">
+                        <i class="bi bi-bag-plus me-2"></i> THÊM VÀO GIỎ HÀNG
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Đồng bộ giá từ Model (Server) sang Javascript
+    const basePrice = @Model.Price;
+
+    function updateTotal() {
+        let total = basePrice;
+
+        // Tính giá Size
+        const selectedSize = document.querySelector('input[name="size"]:checked');
+        if (selectedSize) {
+            total += parseInt(selectedSize.getAttribute('data-price') || 0);
+        }
+
+        // Tính giá Toppings
+        document.querySelectorAll('.topping-checkbox:checked').forEach(item => {
+            total += parseInt(item.getAttribute('data-price') || 0);
+        });
+
+        // Hiển thị giá với định dạng VNĐ
+        document.getElementById('display-price').textContent = total.toLocaleString('vi-VN');
+    }
+
+    // Lắng nghe sự kiện thay đổi trên toàn bộ form
+    document.addEventListener('change', function(e) {
+        if (e.target.name === 'size' || e.target.classList.contains('topping-checkbox')) {
+            updateTotal();
+        }
+    });
+
+    // Chạy lần đầu khi load trang
+    updateTotal();
+</script>

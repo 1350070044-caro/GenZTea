@@ -1,0 +1,81 @@
+@model IEnumerable<QuanTraSua.Models.Product>
+@{
+    ViewData["Title"] = "Trang chủ - GenZ Tea";
+}
+
+<div class="container-fluid p-0 mb-5 position-relative">
+    <img src="https://tocotocotea.com/wp-content/uploads/2026/01/1920-X-1080.jpg" 
+         class="w-100 object-fit-cover" style="height: 450px; filter: brightness(0.7);" alt="Banner Quán Trà Sữa">
+    <div class="position-absolute top-50 start-50 translate-middle text-center w-100">
+        <h1 class="display-3 fw-bold text-white mb-3" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.6);">
+             
+        </h1>
+        <p class="text-white fs-4 mb-4" style="text-shadow: 1px 1px 3px rgba(0,0,0,0.6);">
+            
+        </p>
+       
+    </div>
+</div>
+
+<div class="container" id="menu-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold m-0" style="color: var(--dark-brown);"> Menu Nổi Bật</h2>
+        
+        <div class="d-flex gap-2">
+            <input type="text" class="form-control rounded-pill border-1" placeholder=" Tìm trà sữa...">
+
+            <button class="btn btn-search rounded-pill px-4">Tìm</button>
+
+        </div>
+    </div>
+
+    <div class="row g-4 mb-5">
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                var imgSrc = string.IsNullOrEmpty(item.ImageUrl) 
+                    ? "https://tocotocotea.com/wp-content/uploads/2026/01/1920-X-1080.jpg" 
+                    : item.ImageUrl;
+
+                <div class="col-md-3 col-sm-6">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 transition-hover bg-white">
+                        <img src="@imgSrc" class="card-img-top" alt="@item.Name" 
+                             style="height: 250px; object-fit: cover; border-top-left-radius: 1rem; border-top-right-radius: 1rem;">
+                        
+                        <div class="card-body text-center d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark mb-1">@item.Name</h5>
+                            
+                            <p class="text-muted small mb-2" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                @(string.IsNullOrEmpty(item.Description) ? "Hương vị thơm ngon, đậm đà khó cưỡng." : item.Description)
+                            </p>
+                            
+                            <p class="card-text fw-bold fs-4 mb-3" style="color: var(--accent);">
+                                @String.Format("{0:N0}", item.Price) đ
+                            </p>
+                            
+
+                            <a href="/Home/Details/@item.Id" class="btn btn-select mt-auto fw-bold rounded-pill py-2 w-100 shadow-sm">
+     CHỌN MÓN
+</a>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted fs-5">Hiện tại quán chưa có món nào. Bạn hãy vào trang Quản trị để thêm nhé!</p>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+    .transition-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .transition-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .btn-custom { background-color: var(--milk-tea); color: white; border: none; }
+    .btn-custom:hover { background-color: var(--accent); color: white; }
+</style>

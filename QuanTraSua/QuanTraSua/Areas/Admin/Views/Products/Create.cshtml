@@ -1,0 +1,107 @@
+@model QuanTraSua.Models.Product
+
+@{
+    ViewData["Title"] = "Thêm Món Mới";
+}
+
+<div class="container mt-4">
+    <h2 class="text-success fw-bold">Thêm Trà Sữa Mới </h2>
+    <p class="text-muted">Điền thông tin bên dưới để đưa món mới lên Menu nhé.</p>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-7">
+            <form asp-action="Create" asp-controller="Product" enctype="multipart/form-data" class="card p-4 shadow-sm border-0 rounded-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                
+                <div class="form-group mb-3">
+                    <label asp-for="Name" class="control-label fw-bold">Tên món</label>
+                    <input asp-for="Name" class="form-control" placeholder="Ví dụ: Trà sữa nướng trân châu..." />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="Price" class="control-label fw-bold">Giá tiền (VNĐ)</label>
+                            <input asp-for="Price" class="form-control" placeholder="Ví dụ: 45000" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    @* --- PHẦN CHÈN MỚI: SỐ LƯỢNG TỒN KHO --- *@
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="Stock" class="control-label fw-bold">Số lượng trong kho</label>
+                            <input asp-for="Stock" class="form-control" type="number" min="0" value="0" />
+                            <span asp-validation-for="Stock" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label class="control-label fw-bold">📁 Upload File Ảnh (JPG/PNG)</label>
+                    <input type="file" name="ImageFile" accept="image/*" class="form-control" id="imageFile" />
+                </div>
+                <div class="form-group mb-3">
+                    <label asp-for="ImageUrl" class="control-label fw-bold">Hoặc Link URL</label>
+                    <input asp-for="ImageUrl" class="form-control" id="imageUrl" placeholder="https://link-anh-tra-sua.jpg" />
+                    <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group mb-4">
+                    <label asp-for="Description" class="control-label fw-bold">Mô tả ngắn gọn</label>
+                    <textarea asp-for="Description" class="form-control" rows="3" placeholder="Ví dụ: Vị trà ô long đậm đà hòa quyện..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                
+                <div class="form-group">
+                    <input type="submit" value=" TẠO MÓN MỚI" class="btn btn-success w-100 fw-bold rounded-pill py-2" style="background-color: #C89F7C; border: none;" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a asp-action="Index" class="text-decoration-none text-secondary fw-bold">← Quay lại danh sách</a>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        const imageFileInput = document.getElementById('imageFile');
+        const imageUrlInput = document.getElementById('imageUrl');
+        
+        // Tạo khu vực Preview ảnh bên cạnh form
+        const imgPreview = document.createElement('img');
+        imgPreview.id = 'imgPreview';
+        imgPreview.className = 'img-fluid shadow-sm mt-3';
+        imgPreview.style.maxWidth = '300px';
+        imgPreview.style.borderRadius = '15px';
+        imgPreview.alt = 'Preview';
+        imgPreview.src = '/images/no-image.svg';
+
+        const row = document.querySelector('.row');
+        const previewDiv = document.createElement('div');
+        previewDiv.className = 'col-md-5 d-flex align-items-center justify-content-center';
+        previewDiv.appendChild(imgPreview);
+        row.appendChild(previewDiv);
+
+        function updatePreview() {
+            const file = imageFileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => imgPreview.src = e.target.result;
+                reader.readAsDataURL(file);
+            } else if (imageUrlInput.value) {
+                imgPreview.src = imageUrlInput.value;
+            } else {
+                imgPreview.src = '/images/no-image.svg';
+            }
+        }
+
+        imageFileInput?.addEventListener('change', updatePreview);
+        imageUrlInput?.addEventListener('input', updatePreview);
+    </script>
+}

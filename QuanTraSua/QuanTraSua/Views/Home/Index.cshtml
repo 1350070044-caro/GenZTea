@@ -1,0 +1,376 @@
+﻿@model IEnumerable<QuanTraSua.Models.Product>
+
+@{
+    ViewData["Title"] = "Trang Chủ - GenZ Tea";
+}
+
+<!-- 1. Sticky Header already in _Layout, enhanced later -->
+
+<!-- 2. Hero Section -->
+<section class="hero-section py-5 bg-gradient" style="background: linear-gradient(135deg, var(--milk-tea), var(--accent)); color: rgb(52, 51, 51); position: relative; overflow: hidden;">
+    <div class="container">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-7 text-center text-lg-start">
+
+                <h1 class="display-3 fw-bold mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.3); color: #2d5a27;">
+                    Trà Sữa  <br><span>GenZ Tea</span>
+                </h1>
+
+                <p class="lead fs-4 mb-4 opacity-90">
+                    Đậm vị trà xanh nguyên chất, trân châu dai giòn. <br>
+                    <strong>Đã có 10.000+ lượt đặt hàng!</strong> <br />
+                    
+                </p>
+                <div>
+                    <a href="/Home/Menu" class="btn btn-light btn-lg px-5 me-3 rounded-pill shadow-lg fw-bold">
+                         Xem Menu
+                    </a>
+                    <a href="/Cart" class="btn btn-light btn-lg px-5 me-3 rounded-pill shadow-lg fw-bold">
+                         Giỏ Hàng
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="/images/1920-X-1080.jpg"
+                     alt="Trà Sữa "
+                     class="img-fluid rounded-5 shadow-lg"
+                     style="max-height: 500px; object-fit: cover; border: 8px solid rgb(255, 255, 255);">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Promotion Banner Carousel -->
+<section class="promo-section py-4" style="background: rgba(255,255,255,0.9);">
+    <div class="container">
+        <div id="promoCarousel" class="carousel slide shadow-sm rounded-4 overflow-hidden" data-bs-ride="carousel" data-bs-interval="3000">
+            
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#promoCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="/images/slide-page.png" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Promo 1">
+                    
+                </div>
+
+                <div class="carousel-item">
+                    <img src="/images/genz.png" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Promo 2">
+        
+                       
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <img src="/images/bn2.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Promo 3">
+                    
+                       
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#promoCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#promoCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+</section>
+<!-- 4. Categories & Best Sellers -->
+<section class="py-5" style="background-color: #fcf9f5;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold display-6 mb-2" style="color: #2d5a27;">Sản Phẩm Bán Chạy</h2>
+            <div style="width: 80px; height: 4px; background: #2d5a27; margin: 0 auto; border-radius: 2px;"></div>
+        </div>
+
+        <div class="row g-4">
+            @{
+                // Danh sách từ khóa đặc trưng của 4 sản phẩm
+                var keywords = new List<string> { 
+                    "Mộc Châu", 
+                    "Đường Hổ Khổng Lồ", 
+                    "Oolong", 
+                    "Vị Nhài" 
+                };
+
+                // Lọc sản phẩm: lấy những món mà tên có chứa 1 trong các từ khóa trên
+                var bestSellers = Model?.Where(p => keywords.Any(k => p.Name.Contains(k, StringComparison.OrdinalIgnoreCase)))
+                                       .OrderBy(p => p.Price) // Sắp xếp cho đẹp
+                                       .Take(4)
+                                       .ToList();
+            }
+
+            @if (bestSellers != null && bestSellers.Any())
+            {
+                foreach (var product in bestSellers)
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden hover-lift bg-white">
+                            <div class="position-absolute top-0 start-0 m-3" style="z-index: 2;">
+                                <span class="badge rounded-pill bg-danger px-3 py-2">Best Seller 🔥</span>
+                            </div>
+
+                            <div class="overflow-hidden" style="height: 250px; background: #f8f9fa;">
+                                <img src="@(product.ImageUrl ?? "/images/no-image.png")" 
+                                     class="card-img-top h-100 w-100 object-fit-cover transition-zoom" 
+                                     alt="@product.Name">
+                            </div>
+
+                            <div class="card-body d-flex flex-column text-center p-4">
+                                <h5 class="fw-bold text-dark mb-2" style="min-height: 50px; font-size: 1.05rem; line-height: 1.4;">
+                                    @product.Name
+                                </h5>
+                                <p class="text-muted small mb-3 flex-grow-1">
+                                    @(product.Description ?? "Hương vị trà sữa GenZ đặc trưng, thơm ngon khó cưỡng.")
+                                </p>
+                                
+                                <div class="mb-3">
+                                    <span class="fs-4 fw-bold" style="color: #d4a373;">@product.Price.ToString("N0")đ</span>
+                                </div>
+
+                                <button class="btn btn-outline-dark w-100 rounded-pill fw-bold py-2 add-to-cart-btn border-2" data-id="@product.Id">
+                                    Thêm Nhanh
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Đang tải danh sách sản phẩm đặc biệt...</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Hiệu ứng mượt mà hơn */
+    .transition-zoom {
+        transition: transform 0.5s ease;
+    }
+    .hover-lift:hover .transition-zoom {
+        transform: scale(1.1);
+    }
+    .hover-lift {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+    }
+</style>
+
+<!-- 5. Brand Story -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <img src="/images/aboutus-home.jpg" class="img-fluid rounded-4 shadow-lg" alt="Nguyên liệu sạch">
+            </div>
+            <div class="col-lg-6">
+
+                <h2 class="fw-bold mb-4" style="color: #2d5a27;">Câu Chuyện GenZ Tea</h2>
+
+                <p class="lead mb-4">
+                    Bắt đầu từ những lá trà xanh tuyển chọn nơi cao nguyên Đà Lạt, hòa quyện giữa hương trà tự nhiên và vị béo thơm đầy cuốn hút. Mỗi thức uống không chỉ là một lựa chọn giải khát, mà còn là trải nghiệm trẻ trung, hiện đại—nơi bạn tận hưởng trọn vẹn sự tươi mới, chất lượng và cảm hứng của thế hệ Gen Z. <strong>100% tự nhiên</strong>, không chất bảo quản.
+                </p>
+                <ul class="list-unstyled fs-5">
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Trà lá nguyên chất</li>
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Sữa tươi nhập khẩu</li>
+                    <li class="mb-3"><i class="bi bi-check-circle-fill text-success me-2"></i>Trân châu handmade</li>
+                </ul>
+
+                <a href="#menu-section" class="btn btn-lg btn-select px-5 rounded-pill shadow-lg">Khám Phá Ngay</a>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6. Social Gallery -->
+<section class="py-5 bg-pastel" style="background-color: var(--pastel-bg);">
+    <div class="container">
+
+        <h2 class="text-center fw-bold mb-5" style="color: #2d5a27;"> GenZTea Moments</h2>
+
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <img src="/images/checkin1.jpg" class="img-fluid rounded-3 shadow hover-zoom cursor-pointer" alt="Checkin 1" data-bs-toggle="modal" data-bs-target="#galleryModal">
+            </div>
+            <div class="col-6 col-md-3">
+                <img src="/images/checkin2.jpg" class="img-fluid rounded-3 shadow hover-zoom cursor-pointer" alt="Checkin 2" data-bs-toggle="modal" data-bs-target="#galleryModal">
+            </div>
+            <div class="col-6 col-md-3">
+                <img src="/images/checkin03.jpg" class="img-fluid rounded-3 shadow hover-zoom cursor-pointer" alt="Checkin 3" data-bs-toggle="modal" data-bs-target="#galleryModal">
+            </div>
+            <div class="col-6 col-md-3">
+                <img src="/images/checkin4.jpg" class="img-fluid rounded-3 shadow hover-zoom cursor-pointer" alt="Checkin 4" data-bs-toggle="modal" data-bs-target="#galleryModal">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- 7. feebback -->
+<section class="py-5" style="background-color: #fcf9f5;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold" style="color: #2d5a27; font-family: 'Playfair Display', serif;">KHÁCH HÀNG NÓI VỀ GENZ TEA</h2>
+            <div style="width: 100px; height: 2px; background: #2d5a27; margin: 10px auto;"></div>
+        </div>
+
+        <div id="testimonialCarousel" class="carousel slide pb-5" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="mb-3">
+                                <img src="https://ui-avatars.com/api/?name=Chi+Huong&background=random" class="rounded-circle shadow-sm" width="80" alt="Customer Avatar">
+                            </div>
+                            <div class="text-warning mb-2">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                            <p class="fst-italic fs-5 text-muted px-4">
+                                "Dịch vụ tuyệt vời nhất mình từng sử dụng. Đồ uống rất ngon, vị trà đậm đà và trân châu rất dai. Cập nhật từng phút hình ảnh đơn hàng luôn ❤️❤️"
+                            </p>
+                            <h6 class="fw-bold mt-3 text-dark">CHỊ HƯƠNG / <span class="text-muted fw-normal">KH-100020876</span></h6>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8 text-center">
+                            <div class="mb-3">
+                                <img src="https://ui-avatars.com/api/?name=Anh+Minh&background=random" class="rounded-circle shadow-sm" width="80" alt="Customer Avatar">
+                            </div>
+                            <div class="text-warning mb-2">
+                                <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            </div>
+                            <p class="fst-italic fs-5 text-muted px-4">
+                                "Trà sữa Oolong ở đây rất đỉnh, không quá ngọt, đúng gu mình. Nhân viên giao hàng nhiệt tình, đóng gói rất cẩn thận."
+                            </p>
+                            <h6 class="fw-bold mt-3 text-dark">ANH MINH / <span class="text-muted fw-normal">KH-100020555</span></h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                <i class="bi bi-chevron-left text-dark fs-1"></i>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                <i class="bi bi-chevron-right text-dark fs-1"></i>
+            </button>
+
+            <div class="carousel-indicators" style="bottom: 0;">
+                <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active bg-dark"></button>
+                <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" class="bg-dark"></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Chỉnh sửa nút điều hướng cho đẹp hơn */
+    #testimonialCarousel .carousel-control-prev, 
+    #testimonialCarousel .carousel-control-next {
+        width: 5%;
+        opacity: 1;
+    }
+    #testimonialCarousel .carousel-indicators [data-bs-target] {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 0 5px;
+    }
+    #testimonialCarousel p {
+        line-height: 1.6;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+</style>
+
+<!-- 8. Enhanced Footer -->
+<footer class="bg-dark text-white py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <h5 class="fw-bold mb-3"> GenZ Tea</h5>
+                <p>Trà sữa ngon - Giá siêu hời - Giao nhanh cực nhanh!</p>
+                <div>
+                    <i class="bi bi-geo-alt me-2"></i>123 Nguyễn Trãi, Q1<br>
+                    <i class="bi bi-telephone me-2"></i>Hotline: 19001080<br>
+                    <i class="bi bi-envelope me-2"></i>hello@genztea.vn
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <h6 class="fw-bold mb-3">Liên Kết Nhanh</h6>
+                <ul class="list-unstyled">
+                    <li><a href="/Home/Menu" class="text-white-50 text-decoration-none">Thực Đơn</a></li>
+                    <li><a href="/Cart" class="text-white-50 text-decoration-none">Giỏ Hàng</a></li>
+                    <li><a href="/Home/Menu" class="text-white-50 text-decoration-none">Khuyến Mãi</a></li>
+                    <li><a href="#" class="text-white-50 text-decoration-none">Chính Sách Bảo Mật</a></li>
+                    <li><a href="#" class="text-white-50 text-decoration-none">Giao Hàng</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <h6 class="fw-bold mb-3">Kết Nối</h6>
+                <div class="mb-3">
+                    <a href="https://www.facebook.com/thuyy.linhh.71465?mibextid=wwXIfr&rdid=qIximYFn1IZLpAYw&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1DwK8DsWxd%2F%3Fmibextid%3DwwXIfr" class="btn btn-outline-light btn-sm me-2 mb-2"><i class="bi bi-facebook"></i> Facebook</a>
+                    <a href="https://www.tiktok.com/@@thuylinh.7926" class="btn btn-outline-light btn-sm me-2 mb-2"><i class="bi bi-tiktok"></i> TikTok</a>
+                    <a href="https://www.instagram.com/_yht.lnih?igsh=MXBteXJiaGR4NTlncg==" class="btn btn-outline-light btn-sm me-2 mb-2"><i class="bi bi-instagram"></i> Instagram</a>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-2">Nhận Tin Khuyến Mãi</h6>
+                    <div class="input-group">
+                        <input type="email" class="form-control rounded-pill" placeholder="Email của bạn">
+                        <button class="btn btn-custom rounded-pill px-4">Đăng Ký</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="text-center">
+            © 2026 GenZ Tea. All Rights Reserved.
+        </div>
+    </div>
+</footer>
+
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+    }
+    .hover-zoom {
+        transition: transform 0.3s ease;
+    }
+    .hover-zoom:hover {
+        transform: scale(1.05);
+    }
+    .text-accent { color: var(--accent) !important; }
+</style>
+
+<script>
+    // Quick add to cart
+    document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            fetch(`/Cart/AddToCart?id=${id}&quantity=1`)
+                .then(() => Swal.fire('Thêm thành công!', 'Đã thêm vào giỏ hàng', 'success'))
+                .catch(() => Swal.fire('Lỗi!', 'Không thể thêm món', 'error'));
+        });
+    });
+</script>

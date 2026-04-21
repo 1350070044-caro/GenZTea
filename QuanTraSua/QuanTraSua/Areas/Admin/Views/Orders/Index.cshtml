@@ -1,0 +1,131 @@
+@model IEnumerable<QuanTraSua.Models.Order>
+
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    :root { --pastel-bg: #FDFBF7; }
+    body { background-color: var(--pastel-bg); }
+    .alert-container { position: sticky; top: 0; z-index: 1000; }
+    .status-badge { min-width: 100px; text-align: center; }
+</style>
+
+<div class="alert-container">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+            <i class="bi bi-check-circle me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+</div>
+
+<div class="container mt-4">
+    <div class="card shadow border-0 rounded-4">
+        <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+            <h4 class="mb-0 fw-bold"><i class="bi bi-receipt me-2"></i>DANH SÁCH ĐƠN HÀNG</h4>
+            <div>
+                <a href="/Admin/Dashboard" class="btn btn-outline-light btn-sm me-2">← Dashboard</a>
+                <a href="/Admin/Logout" class="btn btn-danger btn-sm">Đăng xuất</a>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr class="text-secondary">
+                            <th class="ps-4">Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Địa chỉ & Liên hệ</th>
+                            <th>Chi tiết món</th>
+                            <th>Tổng tiền</th>
+                            <th>Ngày đặt</th>
+                            <th>Trạng thái</th> @* --- CỘT MỚI THÊM --- *@
+                            <th class="pe-4 text-center">Thao tác</th> @* --- CĂN GIỮA --- *@
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-primary">#@item.Id</td>
+                                    <td>
+                                        <div class="fw-bold">@item.CustomerName</div>
+                                        <span class="badge bg-info text-dark">@item.PaymentMethod</span>
+                                    </td>
+                                    <td>
+                                        <div><i class="bi bi-telephone me-1"></i>@item.Phone</div>
+                                        <div class="text-muted small">@item.Address</div>
+                                    </td>
+                                    <td>
+                                        <div class="text-truncate" style="max-width: 200px;" title="@item.OrderDetails">
+                                            @item.OrderDetails
+                                        </div>
+                                    </td>
+                                    <td class="fw-bold text-danger">@String.Format("{0:N0}", item.TotalPrice)đ</td>
+                                    <td class="small text-muted">
+                                        @item.OrderDate.ToString("HH:mm dd/MM/yyyy")
+                                    </td>
+                                    
+                                    @* --- HIỂN THỊ TRẠNG THÁI --- *@
+                                    <td>
+                                        @if (item.Status == "Đã xác nhận")
+                                        {
+                                            <span class="badge bg-success status-badge"><i class="bi bi-check2-all me-1"></i>Đã xác nhận</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark status-badge"><i class="bi bi-clock me-1"></i>Chờ xác nhận</span>
+                                        }
+                                    </td>
+
+                                    <td class="pe-4">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            @* --- NÚT XÁC NHẬN (Chỉ hiện nếu trạng thái là Chờ xác nhận) --- *@
+                                            @if (item.Status != "Đã xác nhận")
+                                            {
+                                                <form action="/Order/Confirm/@item.Id" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <button type="submit" class="btn btn-sm btn-success">
+                                                        <i class="bi bi-check-lg"></i> Xác nhận
+                                                    </button>
+                                                </form>
+                                            }
+
+                                            @* --- NÚT XÓA --- *@
+                                            <form action="/Order/DeleteConfirm/@item.Id" method="post" onsubmit="return confirm('Xác nhận xóa đơn hàng #@item.Id?')">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0">
+                                                    <i class="bi bi-trash"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="8" class="text-center py-5">Trống</td></tr> @* --- TĂNG colspan lên 8 --- *@
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

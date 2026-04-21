@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Tiệm Trà Sữa GenZ</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+
+    
+    <style>
+        :root {
+            --milk-tea: #C89F7C; /* Nâu sữa */
+            --pastel-bg: #FDFBF7; /* Be sáng */
+            --dark-brown: #5C4033; /* Nâu đậm chữ */
+            --accent: #E8A87C; /* Cam pastel tạo điểm nhấn */
+        }
+        body {
+            background-color: var(--pastel-bg);
+            color: var(--dark-brown);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        /* Style thanh Menu */
+        .navbar-custom {
+            background-color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-brown) !important;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--accent) !important;
+        }
+
+        .btn-custom {
+            background-color: var(--milk-tea);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        .btn-custom:hover {
+            background-color: var(--dark-brown);
+            color: white;
+        }
+        .btn-cart, .btn-search {
+            background-color: white;
+            color: #2d5a27;
+            border: 2px solid #2d5a27;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        .btn-cart:hover, .btn-search:hover {
+            background-color: #2d5a27;
+            color: white;
+        }
+        .btn-select {
+            background-color: white;
+            color: #2d5a27;
+            border: 2px solid #2d5a27;
+            border-radius: 25px;
+            font-weight: bold;
+        }
+        .btn-select:hover {
+            background-color: #2d5a27;
+            color: white;
+        }
+        .navbar-custom {
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+        }
+    </style>
+
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-custom py-3 mb-4">
+            <div class="container">
+
+                <a class="navbar-brand fw-bold fs-3" style="color: #2d5a27;" asp-controller="Home" asp-action="Menu">
+                    GENZ TEA
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link px-3" asp-controller="Home" asp-action="Menu">Khám Phá Menu</a>
+                        </li>
+
+                        <li class="nav-item ms-2">
+    @{
+        // Đoạn code nhỏ để lấy số lượng món từ Session
+        var sessionData = Context.Session.GetString("Cart");
+        var count = 0;
+        if (!string.IsNullOrEmpty(sessionData))
+        {
+            var cart = System.Text.Json.JsonSerializer.Deserialize<List<QuanTraSua.Controllers.CartItem>>(sessionData);
+            count = cart?.Sum(x => x.Quantity) ?? 0;
+        }
+    }
+
+    <a class="btn btn-cart px-4 py-2 shadow-sm" asp-controller="Cart" asp-action="Index">
+        🛒 Giỏ hàng (@count)
+    </a>
+
+</li>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted mt-5 py-4" style="background-color: white;">
+        <div class="container text-center">
+            &copy; 2026 - Tiệm Trà Sữa GenZ - Thơm ngon tới giọt cuối cùng
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

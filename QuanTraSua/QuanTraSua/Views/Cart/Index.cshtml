@@ -1,0 +1,116 @@
+@model List<QuanTraSua.Controllers.CartItem>
+@{
+    ViewData["Title"] = "Giỏ hàng của bạn";
+}
+
+<div class="container mt-5">
+    <h2 class="fw-bold mb-4" style="color: #2d5a27;">🛒 GIỎ HÀNG CỦA BẠN</h2>
+    
+    @if (Model.Count > 0) {
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 rounded-4 p-3">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Giá</th>
+                                <th style="width: 150px;">Số lượng</th>
+                                <th>Tổng</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model) {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@item.ImageUrl" style="width:60px; height:60px; object-fit:cover" class="rounded-3 me-3">
+                                            <div>
+                                                <span class="fw-bold d-block">@item.ProductName</span>
+                                                <small class="text-muted">Còn lại: @item.Stock</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>@String.Format("{0:N0}", item.Price)đ</td>
+                                    <td>
+                                        <div class="input-group input-group-sm">
+                                            <button class="btn btn-outline-secondary btn-minus" type="button" data-id="@item.ProductId">-</button>
+                                            <input type="number" class="form-control text-center qty-input" 
+                                                   value="@item.Quantity" 
+                                                   data-id="@item.ProductId" 
+                                                   data-stock="@item.Stock"
+                                                   readonly style="background-color: white;">
+                                            <button class="btn btn-outline-secondary btn-plus" type="button" data-id="@item.ProductId">+</button>
+                                        </div>
+                                        <div class="stock-msg text-danger" style="font-size: 11px; display:none;"></div>
+                                    </td>
+                                    <td class="fw-bold">@String.Format("{0:N0}", item.Price * item.Quantity)đ</td>
+                                    <td><a href="/Cart/Remove/@item.ProductId" class="text-danger"><i class="bi bi-trash"></i> Xóa</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4 bg-white">
+                    <h4 class="fw-bold mb-4">Tóm tắt đơn hàng</h4>
+                    <div class="d-flex justify-content-between fs-5 mb-4">
+                        <span>Tổng tiền:</span>
+                        <span class="fw-bold text-success">@String.Format("{0:N0}", ViewBag.Total)đ</span>
+                    </div>
+                    <a href="/Order/Create" class="btn btn-lg w-100 rounded-pill fw-bold" style="background-color: #2d5a27; color: white; border:none;">
+                        TIẾN HÀNH THANH TOÁN
+                    </a>
+                    <a href="/Home/Menu" class="btn btn-outline-secondary w-100 rounded-pill mt-2">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    } else {
+        <div class="text-center py-5">
+            <h4 class="text-muted">Giỏ hàng đang trống!</h4>
+            <a href="/Home/Menu" class="btn btn-primary mt-3 px-5 py-2">Quay lại Menu ngay</a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Xử lý nút cộng (+)
+            $('.btn-plus').click(function () {
+                let input = $(this).siblings('.qty-input');
+                let stock = parseInt(input.data('stock'));
+                let currentVal = parseInt(input.val());
+                let productId = $(this).data('id');
+                let msg = $(this).closest('td').find('.stock-msg');
+
+                if (currentVal < stock) {
+                    if (currentVal < 99) {
+                        updateQty(productId, currentVal + 1);
+                    }
+                } else {
+                    msg.text(`⚠️ Chỉ còn ${stock} món`).fadeIn().delay(1500).fadeOut();
+                }
+            });
+
+            // Xử lý nút trừ (-)
+            $('.btn-minus').click(function () {
+                let input = $(this).siblings('.qty-input');
+                let currentVal = parseInt(input.val());
+                let productId = $(this).data('id');
+
+                if (currentVal > 1) {
+                    updateQty(productId, currentVal - 1);
+                }
+            });
+
+            function updateQty(id, qty) {
+                // Chuyển hướng đến hàm UpdateQuantity trong CartController
+                window.location.href = `/Cart/UpdateQuantity?id=${id}&quantity=${qty}`;
+            }
+        });
+    </script>
+}

@@ -1,0 +1,54 @@
+@model QuanTraSua.Models.Product
+
+@{
+    ViewData["Title"] = "Xóa Món";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger shadow-lg">
+                <div class="card-header bg-danger text-white text-center py-4">
+                    <i class="bi bi-exclamation-triangle-fill fs-1 mb-2 d-block"></i>
+                    <h3 class="mb-0 fw-bold">Xác nhận xóa món "@Model.Name"?</h3>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <img src="@Model.ImageUrl" class="rounded-3 shadow-sm img-fluid mb-3" style="max-height: 200px; object-fit: cover;" />
+                            }
+                        </div>
+                        <div class="col-md-8">
+                            <dl class="row mb-4">
+                                <dt class="col-sm-4 fw-bold text-muted">Tên món:</dt>
+                                <dd class="col-sm-8 fw-bold">@Model.Name</dd>
+                                <dt class="col-sm-4 fw-bold text-muted">Giá:</dt>
+                                <dd class="col-sm-8 h5 text-danger">@String.Format("{0:N0}", Model.Price)đ</dd>
+                                <dt class="col-sm-4 fw-bold text-muted">Mô tả:</dt>
+                                <dd class="col-sm-8">@Model.Description</dd>
+                            </dl>
+                            <div class="alert alert-warning">
+                                <i class="bi bi-info-circle"></i> 
+                                Món này sẽ bị xóa vĩnh viễn và không thể khôi phục. 
+                                Đơn hàng cũ vẫn hiển thị nhưng không còn ảnh/sửa được.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <form asp-action="Delete" asp-controller="Product" method="post" style="display: inline;">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger px-5 py-2 fw-bold rounded-pill shadow-sm">
+                            <i class="bi bi-trash-fill me-2"></i> Xóa Vĩnh viễn
+                        </button>
+                    </form>
+                    <a asp-action="Index" asp-controller="Product" class="btn btn-secondary px-5 py-2 fw-bold rounded-pill ms-3 shadow-sm">
+                        Hủy · Giữ lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

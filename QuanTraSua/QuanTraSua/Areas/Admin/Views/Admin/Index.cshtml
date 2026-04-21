@@ -1,0 +1,38 @@
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <i class="bi bi-shield-lock fs-1 text-muted mb-4 d-block"></i>
+            <h2 class="fw-bold text-muted mb-3">Admin Panel</h2>
+            <p class="lead text-muted mb-4">Truy cập các trang quản lý qua đường dẫn trực tiếp:</p>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <a href="/Admin/Dashboard" class="btn btn-primary w-100 h-100 p-4 rounded-4 shadow">
+                        <i class="bi bi-graph-up fs-2 d-block mb-2"></i>
+                        <h5>Doanh Thu</h5>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/Admin/Products" class="btn btn-warning w-100 h-100 p-4 rounded-4 shadow">
+                        <i class="bi bi-cup-hot fs-2 d-block mb-2"></i>
+                        <h5>Quản lý Món</h5>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="/Admin/Orders" class="btn btn-info w-100 h-100 p-4 rounded-4 shadow">
+                        <i class="bi bi-receipt fs-2 d-block mb-2"></i>
+                        <h5>Quản lý Đơn</h5>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-5">
+                <a href="/Admin/Login" class="btn btn-outline-primary rounded-pill px-4 py-2 fw-bold">
+                    Đăng nhập Admin
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

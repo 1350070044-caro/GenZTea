@@ -1,0 +1,111 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QuanTraSua.Data;
+using System.Linq;
+using System.Text.Json; // Bắt buộc phải có dòng này
+
+namespace QuanTraSua.Areas.Admin.Controllers
+{
+    [Area("Admin")]
+    public class AdminController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public AdminController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public IActionResult Index()
+        {
+            return RedirectToAction("Login");
+        }
+
+        public IActionResult Login()
+        {
+            if (HttpContext.Session.GetString("AdminAuth") == "true")
+                return RedirectToAction("Dashboard");
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(string username, string password)
+        {
+            if (username == "admin" && password == "admin123")
+            {
+                HttpContext.Session.SetString("AdminAuth", "true");
+                return RedirectToAction("Dashboard");
+            }
+            ViewBag.Error = "Sai tên đăng nhập hoặc mật khẩu!";
+            return View();
+        }
+
+        public IActionResult Dashboard()
+        {
+            if (!IsAdminAuthenticated()) return RedirectToAction("Login");
+
+            // Lấy dữ liệu đơn hàng
+            var orders = _context.Orders.ToList();
+
+            // 1. Thống kê số liệu tổng quát
+            ViewBag.TotalOrders = orders.Count;
+            ViewBag.TotalRevenue = orders.Sum(o => o.TotalPrice);
+            ViewBag.TotalCustomers = orders.Select(o => o.Phone).Distinct().Count();
+
+            // 2. Xử lý dữ liệu Biểu đồ doanh thu (Mặc định 6 tháng gần nhất)
+            var labelsList = new List<string>();
+            var dataList = new List<double>();
+
+            for (int i = 5; i >= 0; i--)
+            {
+                var targetDate = DateTime.Now.AddMonths(-i);
+                labelsList.Add($"Tháng {targetDate.Month}");
+
+                var monthlyRevenue = orders
+                    .Where(o => o.OrderDate.Month == targetDate.Month && o.OrderDate.Year == targetDate.Year)
+                    .Sum(o => (double)o.TotalPrice);
+                dataList.Add(monthlyRevenue);
+            }
+
+            // CHÈN DỮ LIỆU JSON (Quan trọng nhất để JS nhận diện mảng)
+            ViewBag.ChartLabels = JsonSerializer.Serialize(labelsList);
+            ViewBag.ChartData = JsonSerializer.Serialize(dataList);
+
+            // 3. Xử lý dữ liệu Biểu đồ tròn (Trạng thái đơn hàng)
+            // Tạm thời chia theo giá trị để có màu sắc (Bạn có thể thay bằng trường Status thực tế)
+            ViewBag.Pending = orders.Count(o => o.TotalPrice < 100000); 
+            ViewBag.Confirmed = orders.Count(o => o.TotalPrice >= 100000);
+
+            var recentOrders = _context.Orders.OrderByDescending(o => o.OrderDate).Take(10).ToList();
+            return View(recentOrders);
+        }
+
+        // ... Các phương thức CreateOrder, Logout, IsAdminAuthenticated giữ nguyên như cũ
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult CreateOrder(QuanTraSua.Models.Order order)
+        {
+            if (!IsAdminAuthenticated()) return Unauthorized();
+            if (ModelState.IsValid)
+            {
+                order.OrderDate = DateTime.Now;
+                _context.Orders.Add(order);
+                _context.SaveChanges();
+                TempData["Success"] = "Đã thêm đơn hàng thành call!";
+            }
+            return RedirectToAction("Dashboard");
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("AdminAuth");
+            return RedirectToAction("Login");
+        }
+
+        private bool IsAdminAuthenticated()
+        {
+            return HttpContext.Session.GetString("AdminAuth") == "true";
+        }
+    }
+}
