@@ -1,0 +1,9 @@
+/workspaces/GenZTea/obj/Debug/net10.0/rpswa.dswa.cache.json
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.GeneratedMSBuildEditorConfig.editorconfig
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.AssemblyInfoInputs.cache
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.AssemblyInfo.cs
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.csproj.CoreCompileInputs.cache
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.MvcApplicationPartsAssemblyInfo.cache
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.RazorAssemblyInfo.cache
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.RazorAssemblyInfo.cs
+/workspaces/GenZTea/obj/Debug/net10.0/GenZTea.sourcelink.json
