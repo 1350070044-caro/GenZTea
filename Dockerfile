@@ -1,4 +1,3 @@
-cat > Dockerfile << 'EOF'
 # Build stage
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /app
@@ -18,4 +17,3 @@ ENV ASPNETCORE_URLS=http://+:$PORT
 EXPOSE $PORT
 
 ENTRYPOINT ["dotnet", "GenZTea.dll"]
-EOF
